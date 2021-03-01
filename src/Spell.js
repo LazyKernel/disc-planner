@@ -2,12 +2,25 @@ import React from 'react'
 import { useDrag } from 'react-dnd'
 import { nonBossSpells, spells } from './spells'
 
-const Spell = ({id, x, y, spell}) => {
+const Spell = ({id, x, y, spell, emPerPx}) => {
+    /*
+    red: cast / global cooldown
+    grey: cooldown
+    blue: atonement length
+    teal: atonement extend with spirit shell legendary
+    green: max time spirit shell absorb lasts on targets after atonement falls off
+    purple: time the spell stays active
+    */
+
     const [, drag] = useDrag(() => ({
         item: { id, type: spell }
     }))
 
     const spellInfo = spells[spell]
+
+    const addBorderWidth = (num) => {
+        return num * emPerPx
+    }
 
     const getHeight = () => {
         if (spellInfo.class === "Sire") {
@@ -17,9 +30,13 @@ const Spell = ({id, x, y, spell}) => {
         return 2 * (Object.keys(nonBossSpells).indexOf(spell) + 2)
     }
 
+    const getWidth = (width) => {
+        return `${4 * width + addBorderWidth(width)}em`
+    }
+
     const getPos = () => {
         if (spellInfo.class === "Sire") {
-            return `${4 * x}em`
+            return `${4 * (x + 1) + addBorderWidth(x + 1)}em`
         }
 
         return `${x}px`
@@ -34,7 +51,7 @@ const Spell = ({id, x, y, spell}) => {
                 position: 'absolute',
                 top: `${getHeight()}em`,
                 left: getPos(),
-                width: `${4 * (spellInfo.cooldown || spellInfo.cast || spellInfo.global || 1.5)}em`,
+                width: getWidth(spellInfo.cooldown || spellInfo.cast || spellInfo.global || 1.5),
                 height: '2em',
                 zIndex: 2,
                 cursor: 'ew-resize'
@@ -46,7 +63,7 @@ const Spell = ({id, x, y, spell}) => {
                     position: 'absolute',
                     top: `0px`,
                     left: `0px`,
-                    width: `${spellInfo.cast ? 4 * spellInfo.cast : 4* spellInfo.global}em`,
+                    width: getWidth(spellInfo.cast ? spellInfo.cast : spellInfo.global),
                     height: '2em',
                     zIndex: 3,
                     cursor: 'ew-resize'
@@ -59,7 +76,7 @@ const Spell = ({id, x, y, spell}) => {
                     position: 'absolute',
                     top: `0px`,
                     left: `0px`,
-                    width: `${spellInfo.atonement ? 4 * spellInfo.atonement : 0}em`,
+                    width: getWidth(spellInfo.atonement ? spellInfo.atonement : 0),
                     height: '1em',
                     zIndex: 4,
                     cursor: 'ew-resize'
@@ -71,8 +88,8 @@ const Spell = ({id, x, y, spell}) => {
                     backgroundColor: '#5ee',
                     position: 'absolute',
                     top: `0px`,
-                    left: `${spellInfo.atonement ? 4 * spellInfo.atonement : 0}em`,
-                    width: `${spellInfo.atonement ? 4 * 3 : 0}em`,
+                    left: getWidth(spellInfo.atonement ? spellInfo.atonement : 0),
+                    width: getWidth(spellInfo.atonement ? 3 : 0),
                     height: '1em',
                     zIndex: 4,
                     cursor: 'ew-resize'
@@ -84,8 +101,8 @@ const Spell = ({id, x, y, spell}) => {
                     backgroundColor: '#5e5',
                     position: 'absolute',
                     top: `0px`,
-                    left: `${spellInfo.atonement ? 4 * (spellInfo.atonement + 3) : 0}em`,
-                    width: `${spellInfo.atonement ? 4 * 10 : 0}em`,
+                    left: getWidth(spellInfo.atonement ? spellInfo.atonement + 3 : 0),
+                    width: getWidth(spellInfo.atonement ? 10 : 0),
                     height: '1em',
                     zIndex: 4,
                     cursor: 'ew-resize'
@@ -94,11 +111,11 @@ const Spell = ({id, x, y, spell}) => {
             </div>
             <div
                 style={{
-                    backgroundColor: '#5e5',
+                    backgroundColor: '#e5e',
                     position: 'absolute',
                     top: `0px`,
-                    left: `0`,
-                    width: `${spellInfo.active ? 4 * spellInfo.active : 0}em`,
+                    left: `0px`,
+                    width: getWidth(spellInfo.active ? spellInfo.active : 0),
                     height: '1em',
                     zIndex: 4,
                     cursor: 'ew-resize'

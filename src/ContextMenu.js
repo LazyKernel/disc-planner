@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-const ContextMenu = ({showMenu, xPos, yPos, addSpell}) => {
+const ContextMenu = ({showMenu, xPos, yPos, addSpell, emPerPx}) => {
     const classes = useStyles()
 
     if (showMenu) {

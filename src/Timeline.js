@@ -16,6 +16,7 @@ const Timeline = () => {
     const [rollingId, setRollingId] = useState(0)
     const [zoom, setZoom] = useState(0)
     const ref = React.createRef()
+    const [emPerPx, setEmPerPx] = useState(0)
 
     const calculateRelativePosition = (x, y) => {
         const cur = ref.current
@@ -90,6 +91,12 @@ const Timeline = () => {
 
     useEffect(() => {
         const current = ref.current
+        const fontSize = window.getComputedStyle(current).fontSize
+        setEmPerPx(1 / fontSize.slice(0, fontSize.length - 2))
+    }, [ref, emPerPx])
+
+    useEffect(() => {
+        const current = ref.current
 
         document.addEventListener("click", handleClick)
         current.addEventListener("contextmenu", handleContextMenu)
@@ -150,8 +157,8 @@ const Timeline = () => {
             <Grid container >
                 <Grid item ref={ref} id="timeline-container">
                     {buildTimeline(180)}
-                    {Object.keys(bossSpells).map((e, i) => <Spell key={i} id={i} x={bossSpells[e].time} y={0} spell={e} />)}
-                    {addedSpells.map((e, i) => <Spell key={i} id={e.id} x={e.x} y={e.y} spell={e.spell} />)}
+                    {Object.keys(bossSpells).map((e, i) => <Spell key={i} id={i} x={bossSpells[e].time} y={0} spell={e} emPerPx={emPerPx} />)}
+                    {addedSpells.map((e, i) => <Spell key={i} id={e.id} x={e.x} y={e.y} spell={e.spell} emPerPx={emPerPx} />)}
                 </Grid>
             </Grid>
             <Grid container alignItems="center" justify="center">
