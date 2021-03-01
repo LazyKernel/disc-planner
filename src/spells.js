@@ -145,4 +145,4 @@ const nonBossSpells = Object.keys(spells)
     }, {});
 
 
-module.exports = { spells, nonBossSpells, bossSpells }
+export { spells, nonBossSpells, bossSpells }
