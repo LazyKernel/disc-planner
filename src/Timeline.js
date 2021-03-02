@@ -26,7 +26,7 @@ const Timeline = () => {
     const [yPos, setYPos] = useState(0)
     const [showMenu, setShowMenu] = useState(false)
     const [addedSpells, setAddedSpells] = useState(checkValidity(str) ? JSON.parse(atob(str)) : [])
-    const [rollingId, setRollingId] = useState(0)
+    const [rollingId, setRollingId] = useState(checkValidity(str) ? JSON.parse(atob(str)).reduce((p, c) => p.id > c.id ? p.id : c.id, 0) + 1 : 0)
     const [zoom, setZoom] = useState(0)
     const ref = React.createRef()
     const [emPerPx, setEmPerPx] = useState(0)
@@ -41,6 +41,7 @@ const Timeline = () => {
     }
 
     const moveSpell = (id, x, y) => {
+        console.log(id, x, y)
         const relPos = calculateRelativePosition(x, y)
         setAddedSpells(addedSpells.map(e => {
             if (e.id === id) {
@@ -165,7 +166,7 @@ const Timeline = () => {
                 <Grid item ref={ref} id="timeline-container">
                     {buildTimeline(180)}
                     {Object.keys(bossSpells).map((e, i) => <Spell key={i} id={i} x={bossSpells[e].time} y={0} spell={e} emPerPx={emPerPx} />)}
-                    {addedSpells.map((e, i) => <Spell key={i} id={e.id} x={e.x} y={e.y} spell={e.spell} emPerPx={emPerPx} />)}
+                    {addedSpells.map(e => <Spell key={e.id} id={e.id} x={e.x} y={e.y} spell={e.spell} emPerPx={emPerPx} />)}
                 </Grid>
             </Grid>
             <Grid container alignItems="center" justify="center">
