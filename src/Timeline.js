@@ -6,13 +6,26 @@ import { bossSpells, nonBossSpells } from './spells'
 import { useDrop } from 'react-dnd'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faSearchMinus, faSearchPlus } from '@fortawesome/free-solid-svg-icons'
+import { useParams } from 'react-router-dom'
 
 const Timeline = () => {
-    const [sharedValue, setSharedValue] = useState('W10=')
+    const checkValidity = str => {
+        try {
+            JSON.parse(atob(str))
+            return true
+        }
+        catch (e) {
+            return false
+        }
+    }
+
+    const { str } = useParams()
+
+    const [sharedValue, setSharedValue] = useState(checkValidity(str) ? str : 'W10=')
     const [xPos, setXPos] = useState(0)
     const [yPos, setYPos] = useState(0)
     const [showMenu, setShowMenu] = useState(false)
-    const [addedSpells, setAddedSpells] = useState([])
+    const [addedSpells, setAddedSpells] = useState(checkValidity(str) ? JSON.parse(atob(str)) : [])
     const [rollingId, setRollingId] = useState(0)
     const [zoom, setZoom] = useState(0)
     const ref = React.createRef()
@@ -139,14 +152,8 @@ const Timeline = () => {
         if (!e.target.value) {
             setSharedValue('W10=')
         }
-        else {
-            try {
-                JSON.parse(atob(e.target.value))
-                setSharedValue(e.target.value)
-            }
-            catch (e) {
-                console.error('Shareable code in invalid format')
-            }
+        else if (checkValidity(e.target.value)) {
+            setSharedValue(e.target.value)
         }
     }
 
