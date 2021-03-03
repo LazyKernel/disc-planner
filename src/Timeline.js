@@ -79,6 +79,7 @@ const Timeline = () => {
 
     useEffect(() => {
         setAddedSpells(JSON.parse(atob(sharedValue)))
+        setRollingId(JSON.parse(atob(sharedValue)).reduce((p, c) => p.id > c.id ? p.id : c.id, 0) + 1)
     }, [sharedValue])
 
     const handleClick = (e) => {
